@@ -1,0 +1,2 @@
+C:\Users\dkwkv\Desktop\C++\insertionsort\x64\Debug\insertionsort.exe
+C:\Users\dkwkv\OneDrive\바탕 화면\Projects\C\insertionsort\x64\Debug\insertionsort.exe

@@ -1,0 +1,2 @@
+C:\Users\dkwkv\Desktop\C++\quicksort\x64\Debug\quicksort.exe
+C:\Users\dkwkv\OneDrive\바탕 화면\C++\quicksort\x64\Debug\quicksort.exe

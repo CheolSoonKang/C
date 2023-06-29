@@ -1,0 +1,2 @@
+C:\Users\dkwkv\Desktop\C++\bubblesort\x64\Debug\bubblesort.exe
+C:\Users\dkwkv\OneDrive\바탕 화면\Projects\C\bubblesort\x64\Debug\bubblesort.exe
