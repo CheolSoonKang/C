@@ -1,8 +1,6 @@
 #include<stdio.h>
-#define swap(x,y,temp) {temp = x;x = y;y = temp;}
-//summary : ¹è¿­ ¿ä¼Ò ¸Ç Ã³À½ºÎÅÍ ÀÎÁ¢ÇÑ µÎ ¿ä¼Ò¸¦ ºñ±³ÇÏ¿©
-//          ¹è¿­ÀÇ ¸Ç µÚ¿¡¼­ºÎÅÍ °¡Àå Å« ¿ä¼Ò°¡ Á¤·Ä¿Ï·áµÈ´Ù.
-
+//ë°°ì—´ ìš”ì†Œ ë§¨ ì²˜ìŒë¶€í„° ì¸ì ‘í•œ ë‘ ìš”ì†Œë¥¼ ë¹„êµí•˜ì—¬
+//ë°°ì—´ì˜ ë§¨ ë’¤ì—ì„œë¶€í„° ê°€ì¥ í° ìš”ì†Œê°€ ì •ë ¬ì™„ë£Œëœë‹¤.
 
 void bubbleSort(int * array,int n) {
 
@@ -12,20 +10,12 @@ void bubbleSort(int * array,int n) {
 
 		for (int j = 0; j < i;j++) {//Send the max value to the end of the array
 			if (array[j]>array[j+1]) {
-				swap(array[j], array[j + 1], temp);
+				temp = array[j];
+				array[j] = array[j+1];
+				array[j+1] = temp;
 			}
-			
 		}
 	}
-
-	/*for (int i = 0; i < n; i++) {
-		for (int j = i; j < n-1;j++) {
-			if (array[j]>array[j+1]) {
-				swap(array[j], array[j+1],temp);
-			}
-		}
-	}*/
-
 }
 
 int main()
