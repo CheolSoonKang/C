@@ -2,14 +2,14 @@
 /*
 	summary : 자료 내 최솟값을 찾아 자료의 첫 요소부터 끝 요소까지 교환한다.
 */
-void selectionSort(int * array,int n) {
+void selectionSort(int * array,int lengthOfArray) {
 	int temp = 0;
 	int min;
 
-	for (int i = 0; i < n-1;i++) {
+	for (int i = 0; i < lengthOfArray-1;i++) {
 		min = i;
 
-		for (int j = i + 1; j < n;j++) {
+		for (int j = i + 1; j < lengthOfArray;j++) {
 			if (array[j] < array[min])
 				min = j;
 		}

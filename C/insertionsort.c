@@ -1,11 +1,11 @@
 #include<stdio.h>
 /* summary : sort card in hand
 */
-void insertionSort(int * array,int n){
+void insertionSort(int * array,int lengthOfArray){
 
     int i,j,key;
  
-    for(i=1;i<n;i++){
+    for(i=1;i<lengthOfArray;i++){
 
         key = array[i];
         for(j=i-1; j>=0 && array[j]>key; j--){

@@ -2,8 +2,8 @@
 # define MAX_SIZE 10
 #define swap(type,x,y)do{type t=x;x=y;y=t;}while(0)
 
-void print(int* array, int n) {
-	for (int i = 0; i < n; i++) {
+void print(int* array, int lengthOfArray) {
+	for (int i = 0; i < lengthOfArray; i++) {
 		printf("%3d", array[i]);
 	}
 	printf("\n\n");

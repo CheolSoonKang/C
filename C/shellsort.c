@@ -1,7 +1,7 @@
 #include<stdio.h>
 #define MAX_SIZE 10
 
-void inc_insertion_sort(int *array,int first,int last,int gap){
+void insertion_sort(int *array,int first,int last,int gap){
     int i,j,key;
 
     for(int i=first+gap;i<=last;i=i+gap){
@@ -15,16 +15,16 @@ void inc_insertion_sort(int *array,int first,int last,int gap){
 }
 
 
-void shellSort(int * array,int n){
+void shellSort(int * array,int lengthOfArray){
     int i,gap;
 
-    for(gap = n/2; gap > 0;gap = gap/2){
+    for(gap = lengthOfArray/2; gap > 0;gap = gap/2){
         if(gap%2==0){
             gap++;
         }
 
         for(i=0;i<gap;i++){
-            inc_insertion_sort(array,i,n-1,gap);
+            insertion_sort(array,i,lengthOfArray-1,gap);
         }
     }
 }
