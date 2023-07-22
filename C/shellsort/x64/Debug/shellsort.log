@@ -1,3 +1,0 @@
-﻿  shellsort.c
-C:\Users\dkwkv\Desktop\C++\shellsort\shellsort.c(5,9): warning C4101: 'i' :참조되지 않은 지역 변수입니다.
-  shellsort.vcxproj -> C:\Users\dkwkv\Desktop\C++\shellsort\x64\Debug\shellsort.exe
