@@ -119,7 +119,7 @@ plt.show()
 
 
 ​    
-![output_3_0](/images/output_3_0.png)
+![output_3_0](./images/output_3_0.png)
 ​    
 
 
@@ -146,7 +146,7 @@ fig.set_size_inches(20,15)
 
 
 ​    
-![output_5_1](/images/output_5_1.png)
+![output_5_1](./images/output_5_1.png)
 ​    
 
 
@@ -161,7 +161,7 @@ fig = sm.graphics.tsa.plot_acf(ts , lags = 20, ax = ax1)
 
 
 ​    
-![output_7_0](/images/output_7_0.png)
+![output_7_0](./images/output_7_0.png)
 ​    
 
 
@@ -180,7 +180,7 @@ plt.show()
 
 
 ​    
-![output_9_0](/images/output_9_0.png)
+![output_9_0](./images/output_9_0.png)
 ​    
 
 
@@ -199,7 +199,7 @@ fig = sm.graphics.tsa.plot_pacf(ts_diff[1:],lags=20,ax = ax2)
 
 
 ​    
-![output_11_0](/images/output_11_0.png)
+![output_11_0](./images/output_11_0.png)
 ​    
 
 
@@ -227,7 +227,7 @@ plt.show()
 
 
 ​    
-![output_13_0](/images/output_13_0.png)
+![output_13_0](./images/output_13_0.png)
 ​    
 
 # Scoring
