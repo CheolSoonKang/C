@@ -6,7 +6,7 @@
 
 거품 정렬은 배열의 인접한 두 원소를 비교하여, 정렬되어 있다면 통과, 그렇지 않다면 두 원소를 교환하는 방식으로 진행한다.
 
-![Bubble_sort_animation](../images/Bubble_sort_animation.gif)
+![Bubble_sort_animation](../images/bubblesort/Bubble_sort_animation.gif)
 
 
 
@@ -73,7 +73,7 @@ bubblesort()함수는 int형 포인터와 배열의 크기를 파라미터로 �
 
 (나중에 포스팅 할 다른 정렬들도 대부분 배열의 포인터와 크기를 파라미터로 전달할 것이다.)
 
-![bubblesort](../images/bubblesort.png)
+![bubblesort](../images/bubblesort/bubblesort.png)
 
 위 그림은 거품정렬을 진행할 인수 i와 j의 진행방향을 그림화 한것이다.
 
@@ -102,7 +102,7 @@ bubblesort()함수는 int형 포인터와 배열의 크기를 파라미터로 �
 
 # 시간복잡도
 
-![timecomplex(bubblesort)](../images/timecomplex(bubblesort).PNG)
+![timecomplex(bubblesort)](../images/bubblesort/timecomplex(bubblesort).PNG)
 
 
 
