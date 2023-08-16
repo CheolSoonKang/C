@@ -4,7 +4,7 @@
 
 정렬되는 원소의 이동이 마치 수면 위로 올라오는 거품과 같은 모습같다 하여 붙여진
 
-거품 정렬은 배열의 인접한 두 원소를 비교하여, 정렬되어 있다면 통과, 그렇지 않다면 두 원소를 교환하는 방식으로 진행한다.
+거품 정렬은 데이터의 인접한 두 원소를 비교하여, 정렬되어 있다면 통과, 그렇지 않다면 두 원소를 교환하는 방식으로 진행한다.
 
 ![Bubble_sort_animation](../images/bubblesort/Bubble_sort_animation.gif)
 
@@ -49,7 +49,7 @@ main함수에서는
 
 (정렬 알고리즘을 포스팅하면서 main함수는 바뀌지 않고 정렬 방법만 바뀔 예정입니다.)
 
-# bubblesort함수
+# bubbleSort함수
 
 ```c
 void bubbleSort(int * array,int lengthOfArray) {
