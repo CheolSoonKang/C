@@ -118,6 +118,6 @@ selectionSort()함수는 int형 포인터와 배열의 크기를 파라미터로
 
 # References
 
-- 위키백과 - 버블정렬
+- 위키백과 - 선택정렬
 - Do it! 자료구조와 함께 배우는 알고리즘 입문(한빛미디어)
-- https://gmlwjd9405.github.io/2018/05/06/algorithm-bubble-sort.html
+- https://gmlwjd9405.github.io/2018/05/06/algorithm-selection-sort.html
