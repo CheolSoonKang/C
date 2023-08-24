@@ -18,7 +18,7 @@
 
 
 
-![img](file:///C:/Users/dkwkv/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/ForGitProjects/C/images/AddressWithLinkedList/Double_linked_list.png?lastModify=1692251693)
+![Double_linked_list](../images/AddressWithLinkedList/Double_linked_list.png)
 
 ​											그림2 Double Linked List
 
@@ -67,19 +67,21 @@
 
     만약 중복 데이터가 있다면 모두 출력 후, 그 중에 하나를 골라 수정한다.
 
-![searchAddress](../images/AddressWithLinkedList/deleteAddress.PNG)
+![deleteAddress](../images/AddressWithLinkedList/deleteAddress.PNG)
 
 - 출력(printAddress)
   - 주소록 전체를 출력한다.
 
-![searchAddress](../images/AddressWithLinkedList/printAddress.PNG)
+![printAddress](../images/AddressWithLinkedList/printAddress.PNG)
 
 
 
 - 파일저장(saveFile)
   - 주소록 전체를 txt 파일로 저장한다.
 
-![searchAddress](../images/AddressWithLinkedList/saveFile.PNG)
+![saveFile](../images/AddressWithLinkedList/saveFile.PNG)
+
+
 
 # Code
 
