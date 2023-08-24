@@ -67,7 +67,9 @@
 
     만약 중복 데이터가 있다면 모두 출력 후, 그 중에 하나를 골라 수정한다.
 
-![deleteAddress](../images/AddressWithLinkedList/deleteAddress.PNG)
+![deleteAddress](../images/AddressWithLinkedList/deleteAddress.png)
+
+
 
 - 출력(printAddress)
   - 주소록 전체를 출력한다.
@@ -79,7 +81,7 @@
 - 파일저장(saveFile)
   - 주소록 전체를 txt 파일로 저장한다.
 
-![saveFile](../images/AddressWithLinkedList/saveFile.PNG)
+![saveFile](../images/AddressWithLinkedList/saveFile.png)
 
 
 
