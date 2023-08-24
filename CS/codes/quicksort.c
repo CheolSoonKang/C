@@ -8,7 +8,7 @@ void print(int* array, int lengthOfArray) {
 	}
 	printf("\n\n");
 }
-// í€µ ì •ë ¬
+// Äü Á¤·Ä
 void quickSort(int array[], int left, int right){
 	int pl = left;
 	int pr = right;
