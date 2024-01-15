@@ -1,0 +1,12 @@
+* {
+    list-style: none;
+}
+body {
+    background-color: beige;
+    color: white;
+    justify-content: center;
+}
+
+#clock {
+    font-size: 100px;
+}
