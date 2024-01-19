@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script
+            crossorigin
+            src="https://unpkg.com/react@18/umd/react.production.min.js"
+        ></script>
+        <script
+            crossorigin
+            src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+        ></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="text/babel">
+            const { memo, useState } = React;
+            const Btn = ({ text, onClick }) => {
+                return (
+                    <button
+                        style={{
+                            backgroundColor: 'tomato',
+                            color: 'white',
+                            padding: '10px 20px',
+                            border: 0,
+                            borderRadius: 10,
+                        }}
+                        onClick={onClick}
+                    >
+                        {text}
+                    </button>
+                );
+            };
+            const MemorizedBtn = memo(Btn);
+            const App = () => {
+                const [textVal, settextVal] = useState('Click Me');
+                const onClick = () => {
+                    textVal === 'Click Me'
+                        ? settextVal('Revert Click')
+                        : settextVal('Click Me');
+                };
+                return (
+                    <div>
+                        <MemorizedBtn text={textVal} onClick={onClick} />
+                        <MemorizedBtn text="Submit" />
+                    </div>
+                );
+            };
+            const app = document.getElementById('app');
+            ReactDOM.render(<App />, app);
+        </script>
+    </body>
+</html>
