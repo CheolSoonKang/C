@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script
+            crossorigin
+            src="https://unpkg.com/react@18/umd/react.production.min.js"
+        ></script>
+        <script
+            crossorigin
+            src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+        ></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="text/babel">
+            const { memo, useState, useEffect } = React;
+
+            const App = () => {
+                const [counter, setCounter] = useState(0);
+                const [keyword, setKeyword] = useState('');
+
+                const onChangeKeyword = (event) =>
+                    setKeyword(event.target.value);
+                const onClickCounter = () =>
+                    setCounter((current) => current + 1);
+
+                useEffect(() => {
+                    console.log('i run once');
+                }, []);
+                useEffect(() => {
+                    console.log(`i run when 'counter' changed`);
+                }, [counter]);
+                useEffect(() => {
+                    console.log(`i run when 'keyword' changed`);
+                }, [keyword]);
+                useEffect(() => {
+                    console.log(`i run when 'counter & keyword' changed`);
+                }, [counter, keyword]);
+
+                return (
+                    <div>
+                        <h1>{counter}</h1>
+                        <button onClick={onClickCounter}>Click me</button>
+                        <input type="text" onChange={onChangeKeyword} />
+                    </div>
+                );
+            };
+            const app = document.getElementById('app');
+            ReactDOM.render(<App />, app);
+        </script>
+    </body>
+</html>
