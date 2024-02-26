@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+            crossorigin="anonymous"
+        />
+     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <style>
+      #scoreZone{
+        display: flex;
+      }
+      .bg-primary,.bg-danger,.bg-warning{
+        display: flex;
+        width:100px;
+        color:white;
+        font-size: 30px;
+        font-weight: bold;
+        justify-content: center;
+      }
+    </style>
+</head>
+<body>
+    <h1>가위바위보 게임</h1>
+    <form id='form'action='{{url_for("judge")}}'>
+        <select id='select'name='query'class="form-select form-select-lg mb-3" aria-label="Large select example">
+            <option value="가위">✌️</option>
+            <option value="바위">✊</option>
+            <option value="보">🖐️</option>
+        </select>
+        <button type='button'id='button'class="btn btn-primary">제출</button>
+    </form>
+    <div id="scoreZone">
+      <div class="winZone bg-primary">승 : <p id="win">{{data.last_scores.win}}</p></div>
+      <div class="loseZone bg-danger">패 : <p id="lose">{{data.last_scores.lose}}</p></div>
+      <div class="drawZone bg-warning">무 : <p id="draw">{{data.last_scores.draw}}</p></div>
+    </div>
+    <div id = 'board'class="shadow-lg p-3 mb-5 bg-body-tertiary rounded"></div>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">컴퓨터</th>
+            <th scope="col">사용자</th>
+            <th scope="col">결과</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          {% for index,element in enumerate(data.data) %}
+            <tr>
+              <th scope="row">{{index+1}}</th>
+              <td>{{element.user}}</td>
+              <td>{{element.computer}}</td>
+              <td>{{element.winner}}</td>
+            </tr>
+            
+          {% endfor %}
+          
+        </tbody>
+      </table>
+      <script>
+
+        let count = Number($('#tbody > tr:last-child > th').text())+1;
+        let win= Number($('#win').text());
+        let lose = Number($('#lose').text());
+        let draw= Number($('#draw').text());
+
+        
+        $('#button').click(()=>{
+          //core code
+          const url = new URL(`${window.location.origin}/judge`);
+          const params = { query: $("#select option:selected").val() };
+
+          url.search = new URLSearchParams(params).toString();
+
+          fetch(url)
+          .then((res) => res.json())
+          .then((res) => {
+            const {user,computer,winner} = res;
+            console.log(user,computer,winner)
+
+            let innerHtml = '<tr >';
+            innerHtml += `<th scope="row">${count}</th>`;
+            innerHtml += `<td>${user}</td>`;
+            innerHtml += `<td>${computer}</td>`;
+            innerHtml += `<td>${winner}</td>`;
+            innerHtml += `</tr>`;
+            $('.table > tbody:last').append(innerHtml);
+            if(winner == '사용자'){
+              win++;
+            }else if(winner == '컴퓨터'){
+              lose++;
+            }else{
+              draw++;
+            }
+            count++;
+            $('#win').text(`${win}`);
+            $('#lose').text(`${lose}`);
+            $('#draw').text(`${draw}`);
+            console.log(`win : ${win} , lose : ${lose} , draw : ${draw}`)
+          })
+          .catch((err) => console.log(err));
+        });
+      </script>
+      <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+            crossorigin="anonymous"
+        ></script>
+</body>
+</html>
