@@ -1,6 +1,8 @@
 import hashlib
 import re
 
+# Member class has attribution(name,username(id), password)
+
 
 class Member():
     name = ''
@@ -37,8 +39,9 @@ members.append(user_1)
 members.append(user_2)
 members.append(user_3)
 
+# display member information(name and id)
 for element in members:
-    print(f'{element.name}({element.username}) ', end='')
+    element.display()
 print('\n')
 
 # dummy posts data
