@@ -165,9 +165,6 @@ server.listen(app.get('port'), () => {
 });
 
 const io = new Server(server);
-io.use((socket, next) => {
-    sessionConfig(socket.request, socket.request.res || {}, next);
-});
 
 io.on('connection', (socket) => {
     socket.on('idCheck', ({ email }) => {
