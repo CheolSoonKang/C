@@ -8,10 +8,10 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors';
 import mysql from 'mysql2';
+import { assert } from 'console';
 import mysqlConfig from '../mysql.json' assert { type: 'json' };
 import crypto from 'crypto';
 import { Server } from 'socket.io';
-import { assert } from 'console';
 
 const secretCryptokey = 'thisIsMyNodeJSFirstApp';
 function hashingPasswordSha256(password) {
@@ -20,6 +20,7 @@ function hashingPasswordSha256(password) {
         .update(password)
         .digest('hex');
 }
+let seats = {};
 
 const conn = mysql.createConnection({
     host: mysqlConfig.host,
@@ -28,7 +29,9 @@ const conn = mysql.createConnection({
     password: mysqlConfig.password,
     database: mysqlConfig.database,
 });
+
 conn.connect();
+dotenv.config();
 
 const app = express();
 const __dirname = path.resolve();
@@ -41,22 +44,78 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors());
-// app.use(session({
-//     resave:false,
-//     saveUninitialized:false,
-//     secret:process.env.COOKIE_SECRET,
-//     cookie:{
-//         httpOnly:true,
-//         secure:false
-//     },
-//     name:'session-cookie'
-// }));
+
+const sessionConfig = session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+    },
+    name: 'session-cookie',
+});
+app.use(sessionConfig);
 app.use('/', express.static(path.join(__dirname, '/src/public')));
 
-app.get('/', (req, res) => {
-    res.render('index');
-});
+/////////////////////////////////////////////////////////////////////
+let receivedDailyBoxOfficeList = {};
+let moviePosterUrl = {};
 
+const getDailyBoxOfficeList = () => {
+    receivedDailyBoxOfficeList = {};
+    moviePosterUrl = {};
+    const date = new Date();
+    const dateQuery = `${date.getFullYear()}${String(
+        date.getMonth() + 1
+    ).padStart(2, '0')}${String(date.getDate() - 1).padStart(2, '0')}`;
+
+    const apiUrl = `https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=${dateQuery}`;
+    fetch(apiUrl)
+        .then((result) => {
+            return result.json();
+        })
+        .then(({ boxOfficeResult: { dailyBoxOfficeList } }) => {
+            receivedDailyBoxOfficeList = dailyBoxOfficeList;
+            dailyBoxOfficeList.forEach((item) => {
+                const movieName = item.movieNm;
+                const kmdbServiceKey = `B2BZ9B5BHJ64RPLX1IY4`;
+                const kmdbMovieApi = `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&title=${movieName}&ServiceKey=${kmdbServiceKey}`;
+
+                fetch(kmdbMovieApi)
+                    .then((result) => {
+                        return result.json();
+                    })
+                    .then((datas) => {
+                        const splited = datas.Data[0].Result[0].posters
+                            ? datas.Data[0].Result[0].posters.split('|')
+                            : datas.Data[0].Result[1].posters.split('|');
+                        moviePosterUrl[movieName] = splited[0];
+
+                        // moviePosterUrl.push({
+                        //     [movieName]: splited[0],
+                        // });
+                    });
+            });
+            console.log('getApis done');
+        });
+};
+getDailyBoxOfficeList();
+setInterval(getDailyBoxOfficeList, 3600 * 24 * 1000);
+
+app.get('/', (req, res) => {
+    if (!req.session.islogged) {
+        req.session.islogged = false;
+    }
+    console.dir(req.session);
+    const data = {
+        receivedDailyBoxOfficeList: JSON.stringify(receivedDailyBoxOfficeList),
+        moviePosterUrl: JSON.stringify(moviePosterUrl),
+    };
+
+    res.render('index', { data: data, islogged: req.session.islogged });
+});
+/////////////////////////////////////////////////////////////////////
 app.get('/signup', (req, res) => {
     res.render('signup');
 });
@@ -66,9 +125,29 @@ app.post('/signup', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.send('로그인 페이지입니다.');
+    res.render('login', { islogged: 'not yet' });
 });
-
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+app.post('/loginCheck', (req, res) => {
+    const { id, password } = req.body;
+    console.log(`id:${id} password:${password}`);
+    conn.query(`select * from user where email='${id}'`, (err, result) => {
+        let flag = '0';
+        if (
+            result.length &&
+            result[0].password == hashingPasswordSha256(password)
+        ) {
+            console.log('im here');
+            req.session.ids = id;
+            req.session.islogged = true;
+            flag = '1';
+        }
+        res.json({ loginResult: flag });
+    });
+});
 app.get('/popup/jusoPopup', (req, res) => {
     res.render('jusoPopup');
 });
@@ -86,6 +165,9 @@ server.listen(app.get('port'), () => {
 });
 
 const io = new Server(server);
+io.use((socket, next) => {
+    sessionConfig(socket.request, socket.request.res || {}, next);
+});
 
 io.on('connection', (socket) => {
     socket.on('idCheck', ({ email }) => {
