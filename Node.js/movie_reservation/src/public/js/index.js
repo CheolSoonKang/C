@@ -1,17 +1,22 @@
-let parsedMoviePosterUrl = moviePosterUrl.replace(/[&#]+34+;/g, '"');
-parsedMoviePosterUrl = JSON.parse(parsedMoviePosterUrl);
+//서버에서 JSON.stringify 하여ejs에서 받은 데이터는 string타입이며,
+//특수문자가 HTMLCode로 바뀌어있다. 이를 다시 Object로 변환하기 위한 전처리 함수이다.
+function removeSpecialCharacters(strings) {
+    return JSON.parse(strings.replace(/[&#]+34+;/g, '"'));
+}
 
-let parsedReceivedDailyBoxOfficeList = receivedDailyBoxOfficeList.replace(
-    /[&#]+34+;/g,
-    '"'
+let parsedMoviePosterUrl = removeSpecialCharacters(moviePosterUrl);
+
+let parsedReceivedDailyBoxOfficeList = removeSpecialCharacters(
+    receivedDailyBoxOfficeList
 );
-parsedReceivedDailyBoxOfficeList = JSON.parse(parsedReceivedDailyBoxOfficeList);
-
+let parsedMovieUrls = removeSpecialCharacters(movieUrls);
+console.log(parsedMovieUrls);
 const content = document.getElementById('contents');
 
 parsedReceivedDailyBoxOfficeList.forEach((item) => {
     const divcol = document.createElement('div');
     const card = document.createElement('div');
+    const aTag = document.createElement('a');
     const poster = document.createElement('img');
     const cardBody = document.createElement('div');
     const h5 = document.createElement('h5');
@@ -24,11 +29,14 @@ parsedReceivedDailyBoxOfficeList.forEach((item) => {
     card.classList.add('card');
     card.classList.add('h-50');
     card.style.width = '18rem';
+    card.style.height = '18rem';
 
     poster.src = parsedMoviePosterUrl[item.movieNm];
 
     poster.alt = movieName;
     poster.classList.add('card-img-top');
+    aTag.href = `${parsedMovieUrls[item.movieNm]}`;
+
     card.append(poster);
 
     h5.innerHTML = movieName;
@@ -42,7 +50,8 @@ parsedReceivedDailyBoxOfficeList.forEach((item) => {
     cardBody.append(cardtext);
     card.append(cardBody);
 
-    divcol.append(card);
+    aTag.append(card);
+    divcol.append(aTag);
 
     content.append(divcol);
 });

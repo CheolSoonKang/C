@@ -1,3 +1,8 @@
+/*specification */
+/*Used OpenAPI */
+/*영화진흥위원회 open api*/
+/*한국영화데이터베이스 open api*/
+/*도로명주소 open api */
 import express from 'express';
 import { createServer } from 'http';
 import fs from 'fs';
@@ -20,7 +25,56 @@ function hashingPasswordSha256(password) {
         .update(password)
         .digest('hex');
 }
-let seats = {};
+let seats = {
+    '1관': [
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+    ],
+    '2관': [
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+    ],
+    '3관': [
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+    ],
+    '4관': [
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+    ],
+};
 
 const conn = mysql.createConnection({
     host: mysqlConfig.host,
@@ -61,7 +115,7 @@ app.use('/', express.static(path.join(__dirname, '/src/public')));
 /////////////////////////////////////////////////////////////////////
 let receivedDailyBoxOfficeList = {};
 let moviePosterUrl = {};
-
+let movieUrls = {};
 const getDailyBoxOfficeList = () => {
     receivedDailyBoxOfficeList = {};
     moviePosterUrl = {};
@@ -92,9 +146,9 @@ const getDailyBoxOfficeList = () => {
                             : datas.Data[0].Result[1].posters.split('|');
                         moviePosterUrl[movieName] = splited[0];
 
-                        // moviePosterUrl.push({
-                        //     [movieName]: splited[0],
-                        // });
+                        movieUrls[movieName] = datas.Data[0].Result[0].posters
+                            ? datas.Data[0].Result[0].kmdbUrl
+                            : datas.Data[0].Result[1].kmdbUrl;
                     });
             });
             console.log('getApis done');
@@ -102,7 +156,19 @@ const getDailyBoxOfficeList = () => {
 };
 getDailyBoxOfficeList();
 setInterval(getDailyBoxOfficeList, 3600 * 24 * 1000);
+app.post('/seats/:theaterNumber', (req, res) => {
+    const {
+        params: { theaterNumber },
+    } = req;
 
+    res.send(seats[`${Number(theaterNumber)}관`]);
+});
+app.get('/reservation', (req, res) => {
+    res.render('reservation', {
+        islogged: req.session.islogged,
+        theaters: Object.keys(seats).length,
+    });
+});
 app.get('/', (req, res) => {
     if (!req.session.islogged) {
         req.session.islogged = false;
@@ -111,9 +177,9 @@ app.get('/', (req, res) => {
     const data = {
         receivedDailyBoxOfficeList: JSON.stringify(receivedDailyBoxOfficeList),
         moviePosterUrl: JSON.stringify(moviePosterUrl),
+        movieUrls: JSON.stringify(movieUrls),
     };
-
-    res.render('index', { data: data, islogged: req.session.islogged });
+    res.render(`index`, { data: data, islogged: req.session.islogged });
 });
 /////////////////////////////////////////////////////////////////////
 app.get('/signup', (req, res) => {
@@ -148,16 +214,23 @@ app.post('/loginCheck', (req, res) => {
         res.json({ loginResult: flag });
     });
 });
+
+//for 주소를 받아오기 위한 도로명주소api////////////////////////////////////////
 app.get('/popup/jusoPopup', (req, res) => {
     res.render('jusoPopup');
 });
-
 app.post('/popup/jusoPopup', (req, res) => {
     // 새로 추가
     console.log(req.body);
     res.render('jusoPopup', { locals: req.body });
 });
-
+/////////////////////////////////////////////////
+app.get('/movies/:movieName', (req, res) => {
+    const {
+        params: { movieName },
+    } = req;
+    res.send(`${movieName}`);
+});
 const server = createServer(app);
 
 server.listen(app.get('port'), () => {
@@ -197,5 +270,15 @@ io.on('connection', (socket) => {
                 socket.emit('signUpResult', { result: flag });
             }
         );
+    });
+    socket.on('reserve', ({ x_list, y_list, theaterNumber }) => {
+        for (let i = 0; i < x_list.length; i++) {
+            seats[`${theaterNumber}관`][y_list[i]][x_list[i]] = 2;
+        }
+        io.sockets.emit('reserve', {
+            x_list: x_list,
+            y_list: y_list,
+            theaterNumber: theaterNumber,
+        });
     });
 });

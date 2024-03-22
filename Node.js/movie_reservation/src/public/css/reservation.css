@@ -1,0 +1,21 @@
+.line {
+    display: flex;
+    justify-content: center;
+}
+.seat {
+    margin: 2px;
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+}
+.enable {
+    cursor: pointer;
+    background-color: blue;
+}
+.disable {
+    background-color: black;
+}
+.hover {
+    cursor: pointer;
+    background-color: yellow;
+}
