@@ -21,7 +21,7 @@ submitBtn.addEventListener('click', () => {
             })
             .then(({ loginResult }) => {
                 if (loginResult == '1') {
-                    window.location = '/';
+                    window.location = '/moviereservation';
                 } else {
                     password.value = '';
                     alert('아이디 혹은 비밀번호를 확인해주세요.');

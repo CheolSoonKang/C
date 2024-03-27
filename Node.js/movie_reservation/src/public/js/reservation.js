@@ -20,7 +20,6 @@ const onClickSeat = (event) => {
     if (yellowElements.length != selectedRadioValue) {
         alert('선택하신 좌석 중에 이미 예약이 완료된 좌석이 있습니다.');
     } else {
-        socket.emit();
         if (confirm('예약하시겠습니까?')) {
             let x_list = [],
                 y_list = [];
@@ -202,8 +201,8 @@ const onLeave = (event) => {
     const y = target.getAttribute('data-y');
     switch (selectedRadioValue) {
         case '1':
-            onHoverTarget.classList.remove('hover');
-            onHoverTarget.classList.add('enable');
+            target.classList.remove('hover');
+            target.classList.add('enable');
             break;
         case '2':
             if (targetPosition != 'rightSide') {
@@ -337,7 +336,7 @@ theaterSelect.addEventListener('change', () => {
 });
 //선택한 영화관의 번호에 따라 좌석 받아와 배치한다.
 const getSeats = (theaterNumber) => {
-    fetch(`/seats/${theaterNumber}`, {
+    fetch(`/moviereservation/seats/${theaterNumber}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

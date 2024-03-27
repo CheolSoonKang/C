@@ -134,10 +134,10 @@ socket.on('idCheckResult', (data) => {
 socket.on('signUpResult', ({ result }) => {
     if (result == '1') {
         //success to signUp
-        window.location = '/';
+        window.location = '/moviereservation';
         alert('회원가입이 완료되었습니다.');
     } else {
-        window.location = '/signup';
+        window.location = '/moviereservation/signup';
         alert(
             '알 수 없는 오류로 인해 회원가입되지 않았습니다\n처음부터 다시 시도해주세요.'
         );
