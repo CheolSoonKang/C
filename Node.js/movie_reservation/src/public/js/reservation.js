@@ -38,6 +38,8 @@ const onClickSeat = (event) => {
                 theaterNumber:
                     theaterSelect.options[theaterSelect.selectedIndex].value,
             });
+            alert('예약이 완료되었습니다.');
+            window.location = '/moviereservation';
         } else {
             alert('예약이 취소되었습니다.');
         }
@@ -357,6 +359,7 @@ const getSeats = (theaterNumber) => {
                     div.classList.add('seat');
                     div.setAttribute('data-x', indexX);
                     div.setAttribute('data-y', indexY);
+                    div.style.textAlign = 'center';
                     line.append(div);
                     if (indexX == 0) {
                         div.classList.add('leftSide');
@@ -369,11 +372,17 @@ const getSeats = (theaterNumber) => {
                     }
                     if (seat == 1) {
                         div.classList.add('enable');
+                        div.innerText = `${String.fromCharCode(
+                            65 + indexY
+                        )}${indexX}`;
                         div.addEventListener('click', onClickSeat);
                         div.addEventListener('mouseenter', onHover);
                         div.addEventListener('mouseleave', onLeave);
                     } else if (seat == 2) {
                         div.classList.add('disable');
+                        div.innerText = `${String.fromCharCode(
+                            65 + indexY
+                        )}${indexX}`;
                     } else {
                         div.classList.add('aisle');
                     }

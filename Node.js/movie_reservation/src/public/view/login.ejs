@@ -23,7 +23,7 @@
             "
         >
             <a
-                href="/"
+                href="/moviereservation"
                 style="
                     text-decoration-line: none;
                     color: black;
@@ -32,7 +32,7 @@
                 ><h1 style="font-size: 10vw">SoonGV</h1></a
             >
 
-            <form action="/signup" method="post">
+            <form>
                 <div class="mb-3">
                     <label for="id" class="form-label">아이디</label>
                     <div class="display-flex" style="display: flex">
@@ -65,7 +65,7 @@
                     style="width: 100%"
                 />
                 <div style="display:flex;justify-content: space-around;">
-                    <a href="/signup"style='color:black'><h6>회원가입</h5></a>
+                    <a href="/moviereservation/signup"style='color:black'><h6>회원가입</h5></a>
                     <a ><h6>아이디 찾기</h5></a>
                     <a><h6>비밀번호 찾기</h5></a>
                 </div>
@@ -77,7 +77,7 @@
             if(alle == false){
                 alert('아이디 혹은 비밀번호를 확인해주세요')
             }else if(alle == true){
-                window.location='/'
+                window.location='/moviereservation'
             }
         </script>
         <script

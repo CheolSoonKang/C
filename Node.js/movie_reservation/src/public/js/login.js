@@ -6,7 +6,8 @@ submitBtn.addEventListener('click', () => {
     if (id.value == '' || password.value == '') {
         alert('아이디 혹은 비밀번호를 입력해주세요');
     } else {
-        fetch('/loginCheck', {
+        console.log(id.value);
+        fetch('/moviereservation/loginCheck', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,62 +1,77 @@
 import express from 'express';
 import conn from './db.js';
+import crypto from 'crypto';
 const router = express.Router();
-let seats = {
-    '1관': [
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-    ],
-    '2관': [
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-    ],
-    '3관': [
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-    ],
-    '4관': [
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
-    ],
-};
+const secretCryptokey = 'thisIsMyNodeJSFirstApp';
+// let seats = {
+//     '1관': [
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//     ],
+//     '2관': [
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//     ],
+//     '3관': [
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//     ],
+//     '4관': [
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//         [1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+//     ],
+// };
+let seats = {};
+
+function makeSeats(seat) {
+    conn.query(`select seats from movies`, (err, data) => {
+        data.forEach((item, index) => {
+            seat[`${index + 1}관`] = item.seats;
+        });
+    });
+    return seat;
+}
+seats = makeSeats(seats);
+
 let receivedDailyBoxOfficeList = {};
 let moviePosterUrl = {};
 let movieUrls = {};
 const getDailyBoxOfficeList = () => {
     receivedDailyBoxOfficeList = {};
     moviePosterUrl = {};
+    movieUrls = {};
     const date = new Date();
     const dateQuery = `${date.getFullYear()}${String(
         // fitting format YYYYMMDD
@@ -80,21 +95,27 @@ const getDailyBoxOfficeList = () => {
                         return result.json();
                     })
                     .then((datas) => {
-                        const splited = datas.Data[0].Result[0].posters
-                            ? datas.Data[0].Result[0].posters.split('|')
-                            : datas.Data[0].Result[1].posters.split('|');
-                        moviePosterUrl[movieName] = splited[0];
-
-                        movieUrls[movieName] = datas.Data[0].Result[0].posters
-                            ? datas.Data[0].Result[0].kmdbUrl
-                            : datas.Data[0].Result[1].kmdbUrl;
+                        if (datas.Data[0].Result) {
+                            let i = 0;
+                            while (!datas.Data[0].Result[i].posters) {
+                                i++;
+                            }
+                            const splited =
+                                datas.Data[0].Result[i].posters.split('|');
+                            moviePosterUrl[movieName] = splited[0];
+                            movieUrls[movieName] =
+                                datas.Data[0].Result[i].kmdbUrl;
+                        }
                     });
             });
+        })
+        .then(() => {
             console.log('getApis done');
         });
 };
 getDailyBoxOfficeList();
-setInterval(getDailyBoxOfficeList, 3600 * 24 * 1000);
+setInterval(getDailyBoxOfficeList, 1000 * 60 * 60 * 24);
+
 function hashingPasswordSha256(password) {
     return crypto
         .createHmac('sha256', secretCryptokey)
@@ -112,6 +133,7 @@ router.get('/', (req, res) => {
         moviePosterUrl: JSON.stringify(moviePosterUrl),
         movieUrls: JSON.stringify(movieUrls),
     };
+    console.log(seats[`1관`][0][2]);
     res.render(`index`, { data: data, islogged: req.session.islogged });
 });
 
@@ -128,21 +150,70 @@ router.post('/seats/:theaterNumber', (req, res) => {
 
     res.send(seats[`${Number(theaterNumber)}관`]);
 });
-
+// for signUp route//////////////////////
 router.get('/signup', (req, res) => {
     res.render('signup');
 });
-
 router.post('/signup', (req, res) => {
-    res.render('signup');
+    const {
+        body: { email, password, name, address },
+    } = req;
+    conn.query(
+        `insert into user(email,password,name,address)values("${email}","${hashingPasswordSha256(
+            password
+        )}","${name}","${address}");`,
+        (err, data) => {
+            let flag = '0';
+            if (err == null) {
+                // success to signUp
+                flag = '1';
+            }
+            res.json({ result: flag });
+        }
+    );
 });
-
+router.get('/admin', (req, res) => {
+    res.render('admin');
+});
+router.post('/resetSeat', (req, res) => {
+    const {
+        body: { value },
+    } = req;
+    if (value == 'reset') {
+        for (let y = 0; y < 10; y++) {
+            for (let x = 0; x < 10; x++) {
+                if (!(x == 2) && !(x == 7)) {
+                    conn.query(
+                        `update movies set seats=JSON_SET(seats,'$[${y}][${x}]',1)`,
+                        (err, data) => {
+                            console.log(`err:${err}`);
+                            console.log(`data:${data}`);
+                        }
+                    );
+                }
+            }
+        }
+    }
+});
+router.post('/idCheck', (req, res) => {
+    const {
+        body: { email },
+    } = req;
+    conn.query(`select * from user where email='${email}'`, (err, data) => {
+        let flag = '0';
+        if (data.length === 0) {
+            flag = '1';
+        }
+        res.json({ result: flag });
+    });
+});
+//////////////////////////////////////////
 router.get('/login', (req, res) => {
     res.render('login', { islogged: 'not yet' });
 });
 router.get('/logout', (req, res) => {
     req.session.destroy();
-    res.redirect('/');
+    res.redirect('/moviereservation');
 });
 
 router.post('/loginCheck', (req, res) => {

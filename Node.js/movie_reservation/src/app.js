@@ -3,9 +3,10 @@
 /*영화진흥위원회 open api*/
 /*한국영화데이터베이스 open api*/
 /*도로명주소 open api */
+/*need to install modules(express , express-session , cookie-parser 
+socket.io , mysql2,nodemon,pm2) */
 import express from 'express';
 import { createServer } from 'http';
-import fs from 'fs';
 import path from 'path';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
@@ -13,9 +14,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors';
 import crypto from 'crypto';
-import { Server } from 'socket.io';
-import { router, seats } from './routers.js';
-import conn from './db.js';
+import { router } from './routers.js';
+import socketIOServer from './socket.js';
 dotenv.config();
 
 const secretCryptokey = 'thisIsMyNodeJSFirstApp';
@@ -60,48 +60,4 @@ server.listen(app.get('port'), () => {
     console.log('server running at http://127.0.0.1:3000');
 });
 
-const io = new Server(server);
-
-io.on('connection', (socket) => {
-    socket.on('idCheck', ({ email }) => {
-        conn.query(`select * from user where email='${email}'`, (err, res) => {
-            console.log(res.length);
-            let flag = '0';
-
-            if (res.length === 0) {
-                flag = '1';
-            }
-            console.log(flag);
-            socket.emit('idCheckResult', { result: flag });
-        });
-    });
-    socket.on('signUp', ({ email, password, name, address }) => {
-        console.log(email);
-        console.log(hashingPasswordSha256(password));
-        console.log(name);
-        console.log(address);
-        conn.query(
-            `insert into user(email,password,name,address)values("${email}","${hashingPasswordSha256(
-                password
-            )}","${name}","${address}");`,
-            (err, res) => {
-                let flag = '0';
-                if (err == null) {
-                    // success to signUp
-                    flag = '1';
-                }
-                socket.emit('signUpResult', { result: flag });
-            }
-        );
-    });
-    socket.on('reserve', ({ x_list, y_list, theaterNumber }) => {
-        for (let i = 0; i < x_list.length; i++) {
-            seats[`${theaterNumber}관`][y_list[i]][x_list[i]] = 2;
-        }
-        io.sockets.emit('reserve', {
-            x_list: x_list,
-            y_list: y_list,
-            theaterNumber: theaterNumber,
-        });
-    });
-});
+socketIOServer(server);

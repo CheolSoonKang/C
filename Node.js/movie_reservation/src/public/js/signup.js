@@ -18,9 +18,27 @@ id.addEventListener('focus', () => {
 });
 idCheck.addEventListener('click', () => {
     if (id.value) {
-        socket.emit('idCheck', {
-            email: id.value,
-        });
+        fetch('/moviereservation/idCheck', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: id.value,
+            }),
+        })
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                if (data.result == '1') {
+                    idCheckFlag = true;
+                    alert('사용 가능한 아이디 입니다');
+                } else {
+                    id.value = '';
+                    alert('이미 사용중인 아이디입니다.');
+                }
+            });
     } else {
         alert('아이디를 입력해주세요.');
     }
@@ -57,12 +75,33 @@ submitBtn.addEventListener('click', () => {
         pwCheckFlag &&
         idCheckFlag
     ) {
-        socket.emit('signUp', {
-            email: id.value,
-            password: password.value,
-            name: name.value,
-            address: `${roadAddrPart1.value}(${zipNo.value}) ${addrDetail.value}`,
-        });
+        fetch('/moviereservation/signUp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: id.value,
+                password: password.value,
+                name: name.value,
+                address: `${roadAddrPart1.value}(${zipNo.value}) ${addrDetail.value}`,
+            }),
+        })
+            .then((res) => {
+                return res.json();
+            })
+            .then(({ result }) => {
+                if (result == '1') {
+                    //success to signUp
+                    window.location = '/moviereservation';
+                    alert('회원가입이 완료되었습니다.');
+                } else {
+                    window.location = '/moviereservation/signup';
+                    alert(
+                        '알 수 없는 오류로 인해 회원가입되지 않았습니다\n처음부터 다시 시도해주세요.'
+                    );
+                }
+            });
     } else if (
         !id.value ||
         !password.value ||
@@ -78,7 +117,7 @@ submitBtn.addEventListener('click', () => {
 //도로명 주소
 function goPopup() {
     var pop = window.open(
-        '/popup/jusoPopup',
+        '/moviereservation/popup/jusoPopup',
         'pop',
         'width=570,height=420, scrollbars=yes, resizable=yes'
     );
@@ -120,26 +159,3 @@ function jusoCallBack(
     // addr.value = addrDetail;
     // zip.value = zipNo;
 }
-/////////////////////////////////
-//socket 통신
-socket.on('idCheckResult', (data) => {
-    if (data.result == '1') {
-        idCheckFlag = true;
-        alert('사용 가능한 아이디 입니다');
-    } else {
-        alert('이미 사용중인 아이디입니다.');
-    }
-});
-
-socket.on('signUpResult', ({ result }) => {
-    if (result == '1') {
-        //success to signUp
-        window.location = '/moviereservation';
-        alert('회원가입이 완료되었습니다.');
-    } else {
-        window.location = '/moviereservation/signup';
-        alert(
-            '알 수 없는 오류로 인해 회원가입되지 않았습니다\n처음부터 다시 시도해주세요.'
-        );
-    }
-});
