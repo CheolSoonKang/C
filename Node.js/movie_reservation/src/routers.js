@@ -55,15 +55,16 @@ const secretCryptokey = 'thisIsMyNodeJSFirstApp';
 // };
 let seats = {};
 
-function makeSeats(seat) {
-    conn.query(`select seats from movies`, (err, data) => {
+function makeSeats() {
+    let seat = {};
+    conn.query(`select seats from theaters`, (err, data) => {
         data.forEach((item, index) => {
             seat[`${index + 1}관`] = item.seats;
         });
     });
     return seat;
 }
-seats = makeSeats(seats);
+seats = makeSeats();
 
 let receivedDailyBoxOfficeList = {};
 let moviePosterUrl = {};
@@ -133,7 +134,6 @@ router.get('/', (req, res) => {
         moviePosterUrl: JSON.stringify(moviePosterUrl),
         movieUrls: JSON.stringify(movieUrls),
     };
-    console.log(seats[`1관`][0][2]);
     res.render(`index`, { data: data, islogged: req.session.islogged });
 });
 
@@ -154,25 +154,68 @@ router.post('/seats/:theaterNumber', (req, res) => {
 router.get('/signup', (req, res) => {
     res.render('signup');
 });
+async function getUserNumberByEmail(email) {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `select user_number from user where email="${email}"`,
+            (e, d) => {
+                if (e) {
+                    reject(e);
+                }
+                if (d) {
+                    resolve(d[0].user_number);
+                }
+            }
+        );
+    });
+}
 router.post('/signup', (req, res) => {
     const {
         body: { email, password, name, address },
     } = req;
+    let flag = '0';
     conn.query(
         `insert into user(email,password,name,address)values("${email}","${hashingPasswordSha256(
             password
         )}","${name}","${address}");`,
-        (err, data) => {
-            let flag = '0';
+        async (err, data) => {
+            console.log(`err:${err}`);
+            console.dir(`data:${data}`);
             if (err == null) {
                 // success to signUp
                 flag = '1';
+
+                let userNumber = await getUserNumberByEmail(email);
+                // create a table for each user's records
+                conn.query(
+                    //userName_userNumber_history
+                    `create table ${name}_${userNumber}_history(
+                                id int not null primary key auto_increment,
+                                reservation_at DATETIME default current_timestamp,
+                                reserved_seats varchar(30) not null
+                            );`,
+                    (e2, d2) => {
+                        console.log(e2);
+                        console.log(d2);
+                    }
+                );
+
+                res.json({ result: flag });
             }
-            res.json({ result: flag });
         }
     );
 });
-router.get('/admin', (req, res) => {
+
+router.get('/admin', async (req, res) => {
+    req.session.isAdmin = 'True';
+    conn.query(`show tables;`, (err, data) => {
+        if (data.hasOwnProperty('Tables_in_moviereservation')) {
+            console.log('htp');
+        }
+        for (let i of data) {
+            console.log(i.Tables_in_moviereservation);
+        }
+    });
     res.render('admin');
 });
 router.post('/resetSeat', (req, res) => {
@@ -184,15 +227,14 @@ router.post('/resetSeat', (req, res) => {
             for (let x = 0; x < 10; x++) {
                 if (!(x == 2) && !(x == 7)) {
                     conn.query(
-                        `update movies set seats=JSON_SET(seats,'$[${y}][${x}]',1)`,
-                        (err, data) => {
-                            console.log(`err:${err}`);
-                            console.log(`data:${data}`);
-                        }
+                        `update theaters set seats=JSON_SET(seats,'$[${y}][${x}]',1)`,
+                        (err, data) => {}
                     );
                 }
             }
         }
+        seats = makeSeats();
+        console.log('Reset Seats Done');
     }
 });
 router.post('/idCheck', (req, res) => {
@@ -225,15 +267,18 @@ router.post('/loginCheck', (req, res) => {
             result.length &&
             result[0].password == hashingPasswordSha256(password)
         ) {
-            console.log('im here');
-            req.session.ids = id;
+            req.session.email = id;
+            req.session.userName = result[0].name;
             req.session.islogged = true;
             flag = '1';
         }
         res.json({ loginResult: flag });
     });
 });
-
+//////////////////////////////////////////
+router.get('/mypage', (req, res) => {
+    res.render('mypage', { islogged: req.session.islogged });
+});
 //for 주소를 받아오기 위한 도로명주소api////////////////////////////////////////
 router.get('/popup/jusoPopup', (req, res) => {
     res.render('jusoPopup');

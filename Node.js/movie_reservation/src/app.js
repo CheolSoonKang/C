@@ -26,7 +26,6 @@ function hashingPasswordSha256(password) {
         .digest('hex');
 }
 
-console.log('process:' + process.env.DB_HOST);
 const app = express();
 const __dirname = path.resolve();
 //////////////////////////////////////////////
@@ -39,7 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors());
 
-const sessionConfig = session({
+export const sessionConfig = session({
     resave: false,
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,

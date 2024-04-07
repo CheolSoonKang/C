@@ -1,6 +1,6 @@
-// if (islogged != true) {
+// if (islogged != 'true') {
 //     alert('로그인 먼저 해주세요.');
-//     window.location = '/';
+//     window.location = '/moviereservation';
 // }
 const socket = io();
 const theaterSelect = document.getElementById('theater');
@@ -38,8 +38,6 @@ const onClickSeat = (event) => {
                 theaterNumber:
                     theaterSelect.options[theaterSelect.selectedIndex].value,
             });
-            alert('예약이 완료되었습니다.');
-            window.location = '/moviereservation';
         } else {
             alert('예약이 취소되었습니다.');
         }
@@ -393,7 +391,9 @@ const getSeats = (theaterNumber) => {
 };
 // 기본적으로 1관의 정보를 받아온다.
 getSeats(1);
-
+socket.on('reservationFail', ({ failValue }) => {
+    alert('로그인 정보가 올바르지 않습니다.\n다시 로그인 해주세요');
+});
 //나를 포함한 모든 접속자의 좌석 현황을 변경한다.
 socket.on('reserve', ({ x_list, y_list, theaterNumber }) => {
     if (
@@ -412,4 +412,7 @@ socket.on('reserve', ({ x_list, y_list, theaterNumber }) => {
             target.classList.add('disable');
         }
     }
+});
+socket.on('reservationSuccess', ({ successValue }) => {
+    window.location = '/moviereservation';
 });

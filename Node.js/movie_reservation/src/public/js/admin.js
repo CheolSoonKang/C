@@ -1,5 +1,6 @@
 const btn = document.getElementById('button');
-
+const sock = document.getElementById('sock');
+const socket = io();
 btn.addEventListener('click', () => {
     fetch('/moviereservation/resetSeat', {
         method: 'POST',
@@ -9,5 +10,11 @@ btn.addEventListener('click', () => {
         body: JSON.stringify({
             value: 'reset',
         }),
+    });
+});
+
+sock.addEventListener('click', () => {
+    socket.emit('reqSessionCheck', {
+        data: '1',
     });
 });
