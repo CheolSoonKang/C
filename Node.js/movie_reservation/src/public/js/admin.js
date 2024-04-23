@@ -2,7 +2,7 @@ const btn = document.getElementById('button');
 const sock = document.getElementById('sock');
 const socket = io();
 btn.addEventListener('click', () => {
-    fetch('/moviereservation/resetSeat', {
+    fetch('/resetSeat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

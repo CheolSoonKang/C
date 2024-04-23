@@ -336,7 +336,7 @@ theaterSelect.addEventListener('change', () => {
 });
 //선택한 영화관의 번호에 따라 좌석 받아와 배치한다.
 const getSeats = (theaterNumber) => {
-    fetch(`/moviereservation/seats/${theaterNumber}`, {
+    fetch(`/seats/${theaterNumber}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -414,5 +414,5 @@ socket.on('reserve', ({ x_list, y_list, theaterNumber }) => {
     }
 });
 socket.on('reservationSuccess', ({ successValue }) => {
-    window.location = '/moviereservation';
+    window.location = '/';
 });

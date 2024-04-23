@@ -7,7 +7,7 @@ submitBtn.addEventListener('click', () => {
         alert('아이디 혹은 비밀번호를 입력해주세요');
     } else {
         console.log(id.value);
-        fetch('/moviereservation/loginCheck', {
+        fetch('/loginCheck', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ submitBtn.addEventListener('click', () => {
             })
             .then(({ loginResult }) => {
                 if (loginResult == '1') {
-                    window.location = '/moviereservation';
+                    window.location = '/';
                 } else {
                     password.value = '';
                     alert('아이디 혹은 비밀번호를 확인해주세요.');

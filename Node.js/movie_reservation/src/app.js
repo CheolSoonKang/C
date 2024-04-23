@@ -50,7 +50,7 @@ export const sessionConfig = session({
 });
 app.use(sessionConfig);
 app.use('/', express.static(path.join(__dirname, './src/public')));
-app.use('/moviereservation', router);
+app.use('/', router);
 /////////////////////////////////////////////////////////////////////
 
 const server = createServer(app);

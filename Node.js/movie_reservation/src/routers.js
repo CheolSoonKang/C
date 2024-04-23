@@ -111,6 +111,9 @@ const getDailyBoxOfficeList = () => {
             });
         })
         .then(() => {
+            //console.log(receivedDailyBoxOfficeList);
+            console.log(moviePosterUrl);
+            //console.log(movieUrls);
             console.log('getApis done');
         });
 };
@@ -128,7 +131,7 @@ router.get('/', (req, res) => {
     if (!req.session.islogged) {
         req.session.islogged = false;
     }
-    console.dir(req.session);
+
     const data = {
         receivedDailyBoxOfficeList: JSON.stringify(receivedDailyBoxOfficeList),
         moviePosterUrl: JSON.stringify(moviePosterUrl),
@@ -184,7 +187,6 @@ router.post('/signup', (req, res) => {
             if (err == null) {
                 // success to signUp
                 flag = '1';
-
                 let userNumber = await getUserNumberByEmail(email);
                 // create a table for each user's records
                 conn.query(
@@ -208,14 +210,6 @@ router.post('/signup', (req, res) => {
 
 router.get('/admin', async (req, res) => {
     req.session.isAdmin = 'True';
-    conn.query(`show tables;`, (err, data) => {
-        if (data.hasOwnProperty('Tables_in_moviereservation')) {
-            console.log('htp');
-        }
-        for (let i of data) {
-            console.log(i.Tables_in_moviereservation);
-        }
-    });
     res.render('admin');
 });
 router.post('/resetSeat', (req, res) => {
@@ -255,12 +249,12 @@ router.get('/login', (req, res) => {
 });
 router.get('/logout', (req, res) => {
     req.session.destroy();
-    res.redirect('/moviereservation');
+    res.redirect('/');
 });
 
 router.post('/loginCheck', (req, res) => {
     const { id, password } = req.body;
-    console.log(`id:${id} password:${password}`);
+
     conn.query(`select * from user where email='${id}'`, (err, result) => {
         let flag = '0';
         if (
@@ -277,7 +271,10 @@ router.post('/loginCheck', (req, res) => {
 });
 //////////////////////////////////////////
 router.get('/mypage', (req, res) => {
-    res.render('mypage', { islogged: req.session.islogged });
+    res.render('mypage', {
+        islogged: req.session.islogged,
+        name: req.session.userName,
+    });
 });
 //for 주소를 받아오기 위한 도로명주소api////////////////////////////////////////
 router.get('/popup/jusoPopup', (req, res) => {
@@ -296,4 +293,4 @@ router.get('/movies/:movieName', (req, res) => {
     res.send(`${movieName}`);
 });
 
-export { seats, router };
+export { seats, router, getUserNumberByEmail };
