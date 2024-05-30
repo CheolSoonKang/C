@@ -108,7 +108,7 @@
             </nav>
         </header>
         <div id="contents">
-            <div id="list">
+            <div id="list" style="width: 300px">
                 <h3>마이페이지</h3>
                 <hr />
                 <ul id="snb">
@@ -136,8 +136,37 @@
                 </ul>
                 <div id="menu"></div>
             </div>
+            <div id="listContent" style="width: 500px">
+                <table style="border: 1px solid black">
+                    <tr style="background-color: #5ab">
+                        <td>일시</td>
+                        <td>좌석</td>
+                    </tr>
+                    <%if(data){%> <% data.reverse().forEach(element => {%>
+                    <%const reserved_at = element.reservation_at%> <%const
+                    reservedDate =
+                    `${reserved_at.getFullYear()}-${reserved_at.getMonth()+1}-${reserved_at.getDate()}`;%>
+                    <%const reservedTime = `${reserved_at.getHours()}시
+                    ${reserved_at.getMinutes()}분
+                    ${reserved_at.getSeconds()}초`;%>
+                    <tr>
+                        <td>
+                            <p>
+                                DATE : <%= reservedDate%><br />TIME :
+                                <%=reservedTime%>
+                            </p>
+                            <p></p>
+                        </td>
+
+                        <td>
+                            <p><%=element.reserved_seats%></p>
+                        </td>
+                    </tr>
+                    <%})} %>
+                </table>
+            </div>
         </div>
-        <div id="footer">
+        <div id="footer" style="margin-top: 65vh">
             <p>대표: OOO 사업자등록번호:XXX - XX - XXXXX</p>
             <p>통신판매업신고번호 2024-경기안산-XXXX</p>
             <p>© SOONGV. All Rights Reserved</p>
@@ -149,7 +178,6 @@
         ></script>
         <script>
             const islogged = '<%= islogged%>';
-            const name = '<%=name%>';
         </script>
         <script type="text/javascript" src="../js/mypage.js"></script>
     </body>

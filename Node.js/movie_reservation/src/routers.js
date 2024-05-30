@@ -270,11 +270,28 @@ router.post('/loginCheck', (req, res) => {
     });
 });
 //////////////////////////////////////////
-router.get('/mypage', (req, res) => {
-    res.render('mypage', {
-        islogged: req.session.islogged,
-        name: req.session.userName,
-    });
+router.get('/mypage', async (req, res) => {
+    if (req.session.userName) {
+        console.log(req.session.userName);
+        console.log(Boolean(req.session.userName));
+        const userTableName = `${
+            req.session.userName
+        }_${await getUserNumberByEmail(req.session.email)}_history`;
+        conn.query(`select * from ${userTableName}`, (err, data) => {
+            console.log(data);
+            res.render('mypage', {
+                islogged: true,
+                name: req.session.userName,
+                data: data,
+            });
+        });
+    } else {
+        res.render('mypage', {
+            islogged: false,
+            name: req.session.userName,
+            data: false,
+        });
+    }
 });
 //for 주소를 받아오기 위한 도로명주소api////////////////////////////////////////
 router.get('/popup/jusoPopup', (req, res) => {
